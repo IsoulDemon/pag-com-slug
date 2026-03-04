@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Montar Minha Dieta – Dr. Abacate</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #2D7A4F;
+    --green-light: #3DA068;
+    --green-pale: #E8F5EE;
+    --green-soft: #C8E6D4;
+    --white: #FFFFFF;
+    --off-white: #F7FAF8;
+    --gray-light: #F0F4F2;
+    --gray-text: #6B7A72;
+    --dark: #1A2E22;
+    --red: #E53E3E;
+    --shadow-card: 0 2px 16px rgba(45,122,79,0.08);
+    --radius: 16px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--off-white);
+    color: var(--dark);
+    min-height: 100vh;
+  }
+
+  /* NAV */
+  nav {
+    background: white;
+    border-bottom: 1px solid var(--green-soft);
+    padding: 0 24px;
+    height: 60px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 12px rgba(45,122,79,0.07);
+  }
+  .nav-logo {
+    display: flex; align-items: center; gap: 8px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800; font-size: 1.1rem; color: var(--green);
+    text-decoration: none;
+  }
+  .nav-logo .avo {
+    width: 34px; height: 34px;
+    background: linear-gradient(135deg, var(--green-light), #5A8A3C);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+  }
+  .nav-back {
+    display: flex; align-items: center; gap: 6px;
+    color: var(--gray-text); font-size: 0.85rem; font-weight: 600;
+    cursor: pointer; background: none; border: none;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-back:hover { color: var(--green); }
+
+  /* PROGRESS BAR */
+  .progress-wrap {
+    background: white;
+    border-bottom: 1px solid var(--gray-light);
+    padding: 12px 24px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .progress-bar-bg {
+    flex: 1; height: 6px;
+    background: var(--gray-light);
+    border-radius: 10px; overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green), var(--green-light));
+    border-radius: 10px;
+    transition: width 0.5s ease;
+    width: 14%;
+  }
+  .progress-label {
+    font-size: 0.78rem; font-weight: 700; color: var(--green);
+    white-space: nowrap;
+  }
+
+  /* MAIN */
+  .main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 28px 16px 120px;
+  }
+
+  /* CARD */
+  .card {
+    background: white;
+    border-radius: var(--radius);
+    border: 1.5px solid #E8EFE9;
+    box-shadow: var(--shadow-card);
+    margin-bottom: 18px;
+    overflow: hidden;
+  }
+
+  .card-header {
+    padding: 18px 22px 14px;
+    border-bottom: 1px solid var(--gray-light);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .card-header-icon {
+    width: 36px; height: 36px;
+    background: var(--green-pale);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+  }
+  .card-header-text h3 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700; font-size: 1rem; color: var(--dark);
+  }
+  .card-header-text p {
+    font-size: 0.78rem; color: var(--gray-text); margin-top: 1px;
+  }
+  .card-counter {
+    margin-left: auto;
+    background: var(--green-pale);
+    color: var(--green);
+    border-radius: 20px;
+    padding: 3px 12px;
+    font-size: 0.75rem; font-weight: 700;
+    transition: all 0.3s;
+  }
+  .card-counter.has-selection { background: var(--green); color: white; }
+
+  .card-body { padding: 20px 22px; }
+
+  /* FORM INPUTS */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .form-group { display: flex; flex-direction: column; gap: 5px; }
+  .form-group.full { grid-column: 1 / -1; }
+  .form-label {
+    font-size: 0.78rem; font-weight: 600; color: var(--gray-text);
+  }
+  .form-input, .form-select {
+    background: var(--off-white);
+    border: 1.5px solid var(--gray-light);
+    border-radius: 10px;
+    padding: 11px 14px;
+    font-size: 0.92rem; color: var(--dark);
+    font-family: 'DM Sans', sans-serif;
+    outline: none; width: 100%;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .form-input:focus, .form-select:focus {
+    border-color: var(--green-light);
+    box-shadow: 0 0 0 3px rgba(61,160,104,0.12);
+  }
+  .form-input::placeholder { color: #B0BCBA; }
+
+  /* CALORIAS BADGE */
+  .kcal-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: #FFF8E6; border: 1.5px solid #F6D860;
+    border-radius: 8px; padding: 6px 12px;
+    font-size: 0.8rem; font-weight: 600; color: #7A5A00;
+    margin-top: 4px;
+  }
+
+  /* GENDER BUTTONS */
+  .gender-row { display: flex; gap: 10px; }
+  .gender-btn {
+    flex: 1; padding: 11px;
+    border-radius: 10px;
+    border: 1.5px solid var(--gray-light);
+    background: var(--off-white);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 600; font-size: 0.88rem; cursor: pointer;
+    transition: all 0.2s; color: var(--gray-text);
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .gender-btn.active {
+    background: var(--green-pale);
+    border-color: var(--green);
+    color: var(--green);
+  }
+
+  /* FOOD GRID */
+  .food-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+  .food-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1.5px solid var(--gray-light);
+    background: var(--off-white);
+    cursor: pointer;
+    transition: all 0.18s;
+    user-select: none;
+  }
+  .food-item:hover { border-color: var(--green-soft); background: var(--green-pale); }
+  .food-item.selected {
+    border-color: var(--green);
+    background: var(--green-pale);
+    box-shadow: 0 0 0 2px rgba(45,122,79,0.12);
+  }
+  .food-item.selected .food-check { opacity: 1; }
+  .food-emoji { font-size: 1.2rem; line-height: 1; flex-shrink: 0; }
+  .food-name {
+    font-size: 0.8rem; font-weight: 600; color: var(--dark);
+    flex: 1; line-height: 1.2;
+  }
+  .food-check {
+    width: 16px; height: 16px; min-width: 16px;
+    background: var(--green);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s;
+    flex-shrink: 0;
+  }
+  .food-check svg { width: 9px; height: 9px; stroke: white; stroke-width: 3; fill: none; }
+
+  /* OPTIONAL SECTION TOGGLE */
+  .optional-toggle {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 22px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .optional-toggle:hover { background: var(--green-pale); }
+  .optional-toggle-left { display: flex; align-items: center; gap: 10px; }
+  .optional-label {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700; font-size: 0.95rem; color: var(--dark);
+  }
+  .optional-badge {
+    background: var(--gray-light); color: var(--gray-text);
+    border-radius: 20px; padding: 2px 10px;
+    font-size: 0.72rem; font-weight: 700;
+  }
+  .toggle-arrow {
+    width: 28px; height: 28px;
+    background: var(--gray-light);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.3s, background 0.2s;
+    color: var(--gray-text); font-size: 0.85rem;
+  }
+  .toggle-arrow.open { transform: rotate(180deg); background: var(--green-pale); color: var(--green); }
+  .optional-body { display: none; padding: 0 22px 20px; }
+  .optional-body.open { display: block; }
+
+  /* ROTINA SELECTS */
+  .rotina-group { margin-bottom: 14px; }
+  .rotina-label {
+    font-size: 0.78rem; font-weight: 600; color: var(--gray-text);
+    margin-bottom: 6px; display: block;
+  }
+
+  /* DIETA RESULT CARD */
+  .result-card {
+    background: linear-gradient(160deg, var(--green) 0%, #3DA068 100%);
+    border-radius: var(--radius);
+    padding: 30px 22px;
+    margin-bottom: 18px;
+    color: white;
+    position: relative; overflow: hidden;
+  }
+  .result-card::before {
+    content: '🥑';
+    position: absolute; right: -10px; bottom: -20px;
+    font-size: 8rem; opacity: 0.1; line-height: 1;
+  }
+  .result-tag {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    border-radius: 20px; padding: 4px 14px;
+    font-size: 0.78rem; font-weight: 700;
+    margin-bottom: 14px;
+  }
+  .result-card h2 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1.5rem; font-weight: 800;
+    margin-bottom: 6px; line-height: 1.2;
+  }
+  .result-card p {
+    font-size: 0.88rem; opacity: 0.85; margin-bottom: 20px;
+  }
+  .result-price-row {
+    display: flex; align-items: center; gap: 14px; margin-bottom: 22px;
+  }
+  .price-old {
+    font-size: 0.9rem; opacity: 0.65;
+    text-decoration: line-through;
+  }
+  .price-new {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 2.2rem; font-weight: 800; line-height: 1;
+  }
+  .price-new sup { font-size: 1rem; vertical-align: top; margin-top: 6px; }
+  .result-checklist { list-style: none; margin-bottom: 24px; }
+  .result-checklist li {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 0.85rem; opacity: 0.9; margin-bottom: 8px;
+  }
+  .result-checklist li::before {
+    content: '✓';
+    width: 20px; height: 20px;
+    background: rgba(255,255,255,0.25);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem; font-weight: 800; flex-shrink: 0;
+  }
+  .btn-result {
+    width: 100%;
+    background: white;
+    color: var(--green);
+    border: none; border-radius: 50px;
+    padding: 16px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800; font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.18);
+    transition: all 0.25s;
+    position: relative; z-index: 2;
+  }
+  .btn-result:hover { transform: translateY(-2px); box-shadow: 0 12px 36px rgba(0,0,0,0.22); }
+  .result-guarantee {
+    text-align: center; font-size: 0.76rem; opacity: 0.7;
+    margin-top: 12px; position: relative; z-index: 2;
+  }
+
+  /* STICKY BOTTOM BAR */
+  .sticky-bottom {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: white;
+    border-top: 1px solid var(--green-soft);
+    padding: 14px 20px;
+    display: flex; align-items: center; gap: 14px;
+    box-shadow: 0 -4px 24px rgba(45,122,79,0.12);
+    z-index: 99;
+  }
+  .sticky-summary {
+    flex: 1;
+  }
+  .sticky-summary strong {
+    display: block;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700; font-size: 0.88rem; color: var(--dark);
+  }
+  .sticky-summary span { font-size: 0.76rem; color: var(--gray-text); }
+  .sticky-btn {
+    background: var(--green);
+    color: white; border: none;
+    padding: 13px 28px;
+    border-radius: 50px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700; font-size: 0.9rem;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(45,122,79,0.3);
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .sticky-btn:hover { background: var(--green-light); transform: translateY(-1px); }
+
+  /* SECTION DIVIDER */
+  .section-divider {
+    display: flex; align-items: center; gap: 12px;
+    margin: 24px 0 16px;
+  }
+  .section-divider::before, .section-divider::after {
+    content: ''; flex: 1; height: 1px; background: var(--gray-light);
+  }
+  .section-divider span {
+    font-size: 0.75rem; font-weight: 700; color: var(--gray-text);
+    text-transform: uppercase; letter-spacing: 1px;
+  }
+
+  @media (max-width: 600px) {
+    .food-grid { grid-template-columns: repeat(2, 1fr); }
+    .form-grid { grid-template-columns: 1fr; }
+    .form-group.full { grid-column: 1; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="dr-abacate.html" class="nav-logo">
+    <div class="avo">🥑</div>
+    Dr. Abacate
+  </a>
+  <a href="dr-abacate.html" class="nav-back">
+    ← Voltar
+  </a>
+</nav>
+
+<!-- PROGRESS -->
+<div class="progress-wrap">
+  <div class="progress-bar-bg">
+    <div class="progress-bar-fill" id="progressBar"></div>
+  </div>
+  <div class="progress-label" id="progressLabel">Etapa 1 de 7</div>
+</div>
+
+<div class="main">
+
+  <!-- 1. MEDIDAS CORPORAIS -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-header-icon">📏</div>
+      <div class="card-header-text">
+        <h3>Medidas Corporais</h3>
+        <p>Preencha para calcular sua dieta personalizada</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Peso (kg)</label>
+          <input class="form-input" type="number" placeholder="Ex: 75" id="peso" oninput="updateProgress()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Altura (cm)</label>
+          <input class="form-input" type="number" placeholder="Ex: 175" id="altura" oninput="updateProgress()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Idade</label>
+          <input class="form-input" type="number" placeholder="Ex: 28" id="idade" oninput="updateProgress()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Objetivo</label>
+          <select class="form-select" id="objetivo" onchange="updateProgress()">
+            <option value="">Selecione...</option>
+            <option>Emagrecer</option>
+            <option>Ganhar massa muscular</option>
+            <option>Manter o peso</option>
+            <option>Melhorar saúde geral</option>
+          </select>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Calorias diárias 🔥 <span style="font-weight:400;color:#B0BCBA">(calculado automaticamente)</span></label>
+          <input class="form-input" type="text" id="calorias" placeholder="Preencha os dados acima" readonly style="background:#F7FAF8; cursor:default;">
+          <div class="kcal-badge" id="kcalBadge" style="display:none">
+            🔥 <span id="kcalText"></span>
+          </div>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Restrições alimentares</label>
+          <input class="form-input" type="text" placeholder="Ex: Intolerância à lactose, alergia a glúten...">
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Sexo</label>
+          <div class="gender-row">
+            <button class="gender-btn active" onclick="selectGender(this)">♂ Masculino</button>
+            <button class="gender-btn" onclick="selectGender(this)">♀ Feminino</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider"><span>Escolha seus alimentos</span></div>
+
+  <!-- 2. CAFÉ DA MANHÃ -->
+  <div class="card" id="card-cafe">
+    <div class="card-header">
+      <div class="card-header-icon">☕</div>
+      <div class="card-header-text">
+        <h3>Café da Manhã</h3>
+        <p>Selecione os alimentos que prefere consumir de manhã</p>
+      </div>
+      <div class="card-counter" id="counter-cafe">0 selecionado(s)</div>
+    </div>
+    <div class="card-body">
+      <div class="food-grid" data-meal="cafe">
+        <div class="food-item" onclick="toggleFood(this,'cafe')"><span class="food-emoji">🥚</span><span class="food-name">Ovo</span><div class="food-check"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div></div>
+        <div class="food-item" onclick="toggleFood(this,'cafe')"><span class="food-emoji">🌾</span><span class="food-name">Aveia</span><div class="food-check"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div></div>
+        <div class="food-item" onclick="toggleFood(this,'cafe')"><span class="food-emoji">🍌</span><span class="food-name">Banana</span><div class="food-check"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div></div>
+        <div class="food-item" onclick="toggleFood(this,'cafe')"><span class="food-emoji">🍞</span><span class="food-name">Pão integral</span><div class="food-check"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div></div>
+        <div class="food-item" onclick="toggleFood(this,'cafe')"><span class="food-emoji">🥛</span><span class="food-name">Leite</span><div class="food-check"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div></div>
+        <div class="food-item" onclick="toggleFood(this,'cafe')"><span class="food-emoji">🥤</span><span class="food-name">Whey Protein</span><div class="food-check"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div></div>
+        <div class="food-item" onclick="toggleFood(this,'cafe')"><span class="food-emoji">🍈</span><span class="food-name">Mamão</span><div class="food-check"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div></div>
+        <div class="food-item" onclick="toggleFood(this,'cafe')"><span class="food-emoji">🫙</span><span class="food-name">Iogurte grego</span><div class="food-check"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div></div>
+        <div class="food-item" onclick="toggleFood(this,'cafe')"><span class="food-emoji">🧀</span><span class="food-name">Queijo branco</span><div class="food-check"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div></div>
+        <div class="food-item" onclick="toggleFood(this,'cafe')"><span class="food-emoji">🫐</span><span class="food-name">Frutas vermelhas</span><div class="food-check"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div></div>
+        <div class="food-item" onclick="toggleFood(this,'cafe')"><span class="food-emoji">🍯</span><span class="food-name">Mel</span><div class="food-check"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div></div>
+        <div class="food-item" onclick="toggleFood(this,'cafe')"><span class="food-emoji">🌰</span><span class="food-name">Tapioca</span><div class="food-check"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. ALMOÇO -->
+  <div class="card" id="card-almoco">
+    <div class="card-header">
+      <div class="card-header-icon">🍽️</div>
+      <div class="card-header-text">
+        <h3>Almoço</h3>
+        <p>Selecione os alimentos que prefere no almoço</p>
+      </div>
+      <div class="card-counter" id="counter-almoco">0 selecionado(s)</div>
+    </div>
+    <div class="card-body">
+      <div class="food-grid" data-meal="almoco">
+        <div class="food-item" onclick="toggleFood(this,'almoco')"><span class="food-emoji">🍗</span><span class="food-name">Frango</span><div class="food-check"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div></div>
+        <div class="food-item" onclick="toggleFood(this,'almoco')"><span class="food-emoji">🍚</span><span class="food-name">Arroz branco</span><div class="food-check"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div></div>
+        <div class="food-item" onclick="toggleFood(this,'almoco')"><span class="food-emoji">🫘</span><span class="food-name">Feijão</span><div class="food-check"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div></div>
+        <div class="food-item" onclick="toggleFood(this,'almoco')"><span class="food-emoji">🥦</span><span class="food-name">Brócolis</span><div class="food-check"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div></div>
+        <div class="food-item" onclick="toggleFood(this,'almoco')"><span class="food-emoji">🍠</span><span class="food-name">Batata doce</span><div class="food-check"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div></div>
+        <div class="food-item" onclick="toggleFood(this,'almoco')"><span class="food-emoji">🥩</span><span class="food-name">Carne vermelha</span><div class="food-check"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div></div>
+        <div class="food-item" onclick="toggleFood(this,'almoco')"><span class="food-emoji">🫒</span><span class="food-name">Azeite</span><div class="food-check"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div></div>
+        <div class="food-item" onclick="toggleFood(this,'almoco')"><span class="food-emoji">🥗</span><span class="food-name">Salada verde</span><div class="food-check"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div></div>
+        <div class="food-item" onclick="toggleFood(this,'almoco')"><span class="food-emoji">🐟</span><span class="food-name">Peixe grelhado</span><div class="food-check"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div></div>
+        <div class="food-item" onclick="toggleFood(this,'almoco')"><span class="food-emoji">🌽</span><span class="food-name">Milho</span><div class="food-check"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div></div>
+        <div class="food-item" onclick="toggleFood(this,'almoco')"><span class="food-emoji">🍅</span><span class="food-name">Tomate</span><div class="food-check"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div></div>
+        <div class="food-item" onclick="toggleFood(this,'almoco')"><span class="food-emoji">🥕</span><span class="food-name">Cenoura</span><div class="food-check"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. LANCHE DA TARDE -->
+  <div class="card" id="card-lanche">
+    <div class="card-header">
+      <div class="card-header-icon">🥗</div>
+      <div class="card-header-text">
+        <h3>Lanche da Tarde</h3>
+        <p>Selecione os alimentos para o lanche</p>
+      </div>
+      <div class="card-counter" id="counter-lanche">0 selecionado(s)</div>
+    </div>
+    <div class="card-body">
+      <div class="food-grid" data-meal="lanche">
+        <div class="food-item" onclick="toggleFood(this,'lanche')"><span class="food-emoji">🍎</span><span class="food-name">Maçã</span><div class="food-check"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div></div>
+        <div class="food-item" onclick="toggleFood(this,'lanche')"><span class="food-emoji">🥤</span><span class="food-name">Whey Protein</span><div class="food-check"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div></div>
+        <div class="food-item" onclick="toggleFood(this,'lanche')"><span class="food-emoji">🌰</span><span class="food-name">Castanhas</span><div class="food-check"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div></div>
+        <div class="food-item" onclick="toggleFood(this,'lanche')"><span class="food-emoji">🥜</span><span class="food-name">Pasta de amendoim</span><div class="food-check"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div></div>
+        <div class="food-item" onclick="toggleFood(this,'lanche')"><span class="food-emoji">🍌</span><span class="food-name">Banana</span><div class="food-check"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div></div>
+        <div class="food-item" onclick="toggleFood(this,'lanche')"><span class="food-emoji">🍫</span><span class="food-name">Barra proteica</span><div class="food-check"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div></div>
+        <div class="food-item" onclick="toggleFood(this,'lanche')"><span class="food-emoji">🫙</span><span class="food-name">Iogurte grego</span><div class="food-check"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div></div>
+        <div class="food-item" onclick="toggleFood(this,'lanche')"><span class="food-emoji">🍇</span><span class="food-name">Uva</span><div class="food-check"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div></div>
+        <div class="food-item" onclick="toggleFood(this,'lanche')"><span class="food-emoji">🫐</span><span class="food-name">Mirtilo</span><div class="food-check"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. JANTAR -->
+  <div class="card" id="card-jantar">
+    <div class="card-header">
+      <div class="card-header-icon">🌙</div>
+      <div class="card-header-text">
+        <h3>Jantar</h3>
+        <p>Selecione os alimentos que prefere no jantar</p>
+      </div>
+      <div class="card-counter" id="counter-jantar">0 selecionado(s)</div>
+    </div>
+    <div class="card-body">
+      <div class="food-grid" data-meal="jantar">
+        <div class="food-item" onclick="toggleFood(this,'jantar')"><span class="food-emoji">🐟</span><span class="food-name">Atum</span><div class="food-check"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div></div>
+        <div class="food-item" onclick="toggleFood(this,'jantar')"><span class="food-emoji">🍠</span><span class="food-name">Batata doce</span><div class="food-check"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div></div>
+        <div class="food-item" onclick="toggleFood(this,'jantar')"><span class="food-emoji">🥚</span><span class="food-name">Ovo</span><div class="food-check"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div></div>
+        <div class="food-item" onclick="toggleFood(this,'jantar')"><span class="food-emoji">🍗</span><span class="food-name">Frango</span><div class="food-check"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div></div>
+        <div class="food-item" onclick="toggleFood(this,'jantar')"><span class="food-emoji">🍚</span><span class="food-name">Arroz integral</span><div class="food-check"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div></div>
+        <div class="food-item" onclick="toggleFood(this,'jantar')"><span class="food-emoji">🎃</span><span class="food-name">Abóbora</span><div class="food-check"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div></div>
+        <div class="food-item" onclick="toggleFood(this,'jantar')"><span class="food-emoji">🥬</span><span class="food-name">Couve</span><div class="food-check"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div></div>
+        <div class="food-item" onclick="toggleFood(this,'jantar')"><span class="food-emoji">🥦</span><span class="food-name">Brócolis</span><div class="food-check"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div></div>
+        <div class="food-item" onclick="toggleFood(this,'jantar')"><span class="food-emoji">🥩</span><span class="food-name">Carne magra</span><div class="food-check"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. LANCHE DA MANHÃ (OPCIONAL) -->
+  <div class="card" id="card-manha-opcional">
+    <div class="optional-toggle" onclick="toggleOptional()">
+      <div class="optional-toggle-left">
+        <div class="card-header-icon" style="width:32px;height:32px;font-size:1rem">🌅</div>
+        <span class="optional-label">Lanche da Manhã</span>
+        <span class="optional-badge">Opcional</span>
+      </div>
+      <div class="toggle-arrow" id="optionalArrow">▼</div>
+    </div>
+    <div class="optional-body" id="optionalBody">
+      <div class="food-grid" data-meal="manha">
+        <div class="food-item" onclick="toggleFood(this,'manha')"><span class="food-emoji">🍎</span><span class="food-name">Fruta</span><div class="food-check"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div></div>
+        <div class="food-item" onclick="toggleFood(this,'manha')"><span class="food-emoji">🥜</span><span class="food-name">Castanhas</span><div class="food-check"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div></div>
+        <div class="food-item" onclick="toggleFood(this,'manha')"><span class="food-emoji">🥤</span><span class="food-name">Vitamina</span><div class="food-check"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div></div>
+        <div class="food-item" onclick="toggleFood(this,'manha')"><span class="food-emoji">🫙</span><span class="food-name">Iogurte</span><div class="food-check"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div></div>
+        <div class="food-item" onclick="toggleFood(this,'manha')"><span class="food-emoji">🍌</span><span class="food-name">Banana</span><div class="food-check"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div></div>
+        <div class="food-item" onclick="toggleFood(this,'manha')"><span class="food-emoji">🌾</span><span class="food-name">Granola</span><div class="food-check"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider"><span>Informações de rotina</span></div>
+
+  <!-- 7. ROTINA -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-header-icon">🏃</div>
+      <div class="card-header-text">
+        <h3>Informações de Rotina</h3>
+        <p>Isso ajusta as suas calorias com precisão</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="rotina-group">
+        <label class="rotina-label">Qual é seu nível de atividade física?</label>
+        <select class="form-select" onchange="updateProgress()">
+          <option value="">Selecione...</option>
+          <option>Sedentário (pouco ou nenhum exercício)</option>
+          <option>Levemente ativo (1-3 dias por semana)</option>
+          <option>Moderadamente ativo (3-5 dias por semana)</option>
+          <option>Muito ativo (6-7 dias por semana)</option>
+          <option>Extremamente ativo (atleta / trabalho pesado)</option>
+        </select>
+      </div>
+      <div class="rotina-group">
+        <label class="rotina-label">Quantas horas você dorme por noite?</label>
+        <select class="form-select">
+          <option value="">Selecione...</option>
+          <option>Menos de 5 horas</option>
+          <option>5-6 horas</option>
+          <option>7-8 horas</option>
+          <option>Mais de 8 horas</option>
+        </select>
+      </div>
+      <div class="rotina-group">
+        <label class="rotina-label">Qual horário prefere treinar?</label>
+        <select class="form-select">
+          <option value="">Selecione...</option>
+          <option>Manhã (6h–10h)</option>
+          <option>Tarde (12h–16h)</option>
+          <option>Noite (18h–22h)</option>
+          <option>Não pratico exercícios</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULTADO / CTA -->
+  <div class="result-card">
+    <div class="result-tag">🥑 Sua dieta está pronta</div>
+    <h2>Dieta Personalizada</h2>
+    <p>Criada exclusivamente para você com base nos seus dados</p>
+    <div class="result-price-row">
+      <span class="price-old">R$ 49,90</span>
+      <span class="price-new"><sup>R$</sup>19<sup style="font-size:0.9rem;vertical-align:top;margin-top:8px">,90</sup></span>
+    </div>
+    <ul class="result-checklist">
+      <li>Plano alimentar completo</li>
+      <li>Cálculo baseado nos seus dados</li>
+      <li>Distribuição inteligente das refeições</li>
+      <li>Sugestões de alimentos personalizadas</li>
+      <li>Baseado em lógica nutricional real</li>
+    </ul>
+    <button class="btn-result">🥑 Montar minha dieta →</button>
+    <div class="result-guarantee">🔒 Compra segura · Garantia de satisfação</div>
+  </div>
+
+</div>
+
+<!-- STICKY BOTTOM -->
+<div class="sticky-bottom">
+  <div class="sticky-summary">
+    <strong id="stickyTitle">Preencha seus dados</strong>
+    <span id="stickyDesc">Complete o formulário para gerar sua dieta</span>
+  </div>
+  <button class="sticky-btn" onclick="scrollToResult()">Ver minha dieta →</button>
+</div>
+
+<script>
+  const mealCounts = { cafe: 0, almoco: 0, lanche: 0, jantar: 0, manha: 0 };
+
+  function toggleFood(el, meal) {
+    el.classList.toggle('selected');
+    const grid = el.closest('.food-grid');
+    const selected = grid.querySelectorAll('.food-item.selected').length;
+    mealCounts[meal] = selected;
+    const counter = document.getElementById('counter-' + meal);
+    if (counter) {
+      counter.textContent = selected + ' selecionado(s)';
+      counter.classList.toggle('has-selection', selected > 0);
+    }
+    updateProgress();
+    updateStickyBar();
+  }
+
+  function selectGender(btn) {
+    btn.closest('.gender-row').querySelectorAll('.gender-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    calcCalorias();
+  }
+
+  function toggleOptional() {
+    const body = document.getElementById('optionalBody');
+    const arrow = document.getElementById('optionalArrow');
+    body.classList.toggle('open');
+    arrow.classList.toggle('open');
+  }
+
+  function calcCalorias() {
+    const peso = parseFloat(document.getElementById('peso').value);
+    const altura = parseFloat(document.getElementById('altura').value);
+    const idade = parseFloat(document.getElementById('idade').value);
+    const objetivo = document.getElementById('objetivo').value;
+    const isMale = document.querySelector('.gender-btn.active')?.textContent.includes('Masculino');
+
+    if (!peso || !altura || !idade) return;
+
+    let tmb;
+    if (isMale) {
+      tmb = 88.36 + (13.4 * peso) + (4.8 * altura) - (5.7 * idade);
+    } else {
+      tmb = 447.6 + (9.2 * peso) + (3.1 * altura) - (4.3 * idade);
+    }
+
+    let fator = 1.55; // moderado padrão
+    let kcal = Math.round(tmb * fator);
+
+    if (objetivo === 'Emagrecer') kcal = Math.round(kcal * 0.85);
+    else if (objetivo === 'Ganhar massa muscular') kcal = Math.round(kcal * 1.15);
+
+    document.getElementById('calorias').value = kcal + ' kcal/dia';
+    document.getElementById('kcalText').textContent = kcal + ' kcal por dia · Meta calculada com base nos seus dados';
+    document.getElementById('kcalBadge').style.display = 'inline-flex';
+  }
+
+  document.getElementById('peso').addEventListener('input', calcCalorias);
+  document.getElementById('altura').addEventListener('input', calcCalorias);
+  document.getElementById('idade').addEventListener('input', calcCalorias);
+  document.getElementById('objetivo').addEventListener('change', calcCalorias);
+
+  function updateProgress() {
+    const peso = document.getElementById('peso').value;
+    const altura = document.getElementById('altura').value;
+    const idade = document.getElementById('idade').value;
+    const objetivo = document.getElementById('objetivo').value;
+
+    let steps = 0;
+    if (peso && altura && idade) steps++;
+    if (objetivo) steps++;
+    if (mealCounts.cafe > 0) steps++;
+    if (mealCounts.almoco > 0) steps++;
+    if (mealCounts.lanche > 0) steps++;
+    if (mealCounts.jantar > 0) steps++;
+    if (document.querySelectorAll('select')[2].value) steps++;
+
+    const pct = Math.round((steps / 7) * 100);
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.getElementById('progressLabel').textContent = 'Etapa ' + steps + ' de 7';
+  }
+
+  function updateStickyBar() {
+    const total = Object.values(mealCounts).reduce((a,b) => a+b, 0);
+    if (total > 0) {
+      document.getElementById('stickyTitle').textContent = total + ' alimentos selecionados';
+      document.getElementById('stickyDesc').textContent = 'Quase lá! Complete e gere sua dieta';
+    }
+  }
+
+  function scrollToResult() {
+    document.querySelector('.result-card').scrollIntoView({ behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
